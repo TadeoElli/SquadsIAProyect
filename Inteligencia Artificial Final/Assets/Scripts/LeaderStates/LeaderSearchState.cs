@@ -11,6 +11,8 @@ public class LeaderSearchState : IState
     List<Node> _pathToFollow;
     Pathfinding _pathfinding;
 
+    private bool isEvading = false;
+    private Transform _obstacle;
     public LeaderSearchState(FSM<LeaderStates> fsm, Leader leader, List<Node> pathToFollow, Pathfinding pathfinding)
     {
         _leader = leader;
@@ -48,24 +50,57 @@ public class LeaderSearchState : IState
     void FollowPath()
     {
         if (_pathToFollow.Count == 0) return;
-
         Vector3 nextPos = _pathToFollow[0].transform.position;
-        Vector3 dir = nextPos - _leader.transform.position;
-        _leader.transform.forward = dir;
-        //Collider[] hitColliders = Physics.OverlapSphere(_leader.transform.position, 1f, LayerMask.GetMask("Objects"));
 
-        _leader.transform.position += _leader.transform.forward * (_leader._maxSpeed * Time.deltaTime);
-        Debug.Log(_pathToFollow[0]);
-        if (dir.magnitude < 0.1f)
+        Collider[] isInRange = Physics.OverlapSphere(_leader.transform.position, 0.5f, _leader.obstacles);
+        foreach (var obstacle in isInRange)
         {
-            _pathToFollow.RemoveAt(0);
+            isEvading = true;
+            _obstacle =  obstacle.GetComponent<Transform>();
         }
+        if(isEvading)
+        {
+            Evade(_obstacle.position);
+        }
+        else
+        {
+            Vector3 dir = nextPos - _leader.transform.position;
+            _leader.transform.forward = dir;
+            _leader.transform.position += _leader.transform.forward * (_leader._maxSpeed * Time.deltaTime);
+            //Debug.Log(_pathToFollow[0]);
+            if (dir.magnitude < 1.5f)
+            {
+                _pathToFollow.RemoveAt(0);
+            }
+        }
+
 
         /*if (_leader.InFieldOfView(_pursuitTarget.transform.position))
         {
             if(!_leader._startSearch)  SetGoalNode(_pathToFollow.Peek(),_leader._allHunters);
             _fsm.ChangeState(HunterStates.Chase);
         }*/
+    }
+
+    void Evade(Vector3 dist)
+    {
+        var deltaPosition = Vector3.zero;
+        for (int i = 0; i < _leader.numberOfRays; i++)
+        {
+            var rotation = _leader.transform.rotation;
+            var rotationMod = Quaternion.AngleAxis((i / ((float)_leader.numberOfRays - 1)) * _leader.angle * 2 - _leader.angle, _leader.transform.up);
+            var direction = rotation * rotationMod * Vector3.forward;
+           
+            var ray = new Ray(_leader.transform.position, direction);
+            RaycastHit hitInfo;
+            if(Physics.Raycast(ray, out hitInfo, 2))
+                deltaPosition -= (1.0f / _leader.numberOfRays) * _leader._maxSpeed * direction;
+            else
+                deltaPosition += (1.0f / _leader.numberOfRays) * _leader._maxSpeed * direction;
+        }
+        _leader.transform.position += deltaPosition * Time.deltaTime;
+        if(Vector3.Distance(_leader.transform.position, dist) < 1f)
+            isEvading = false;
     }
 
 }

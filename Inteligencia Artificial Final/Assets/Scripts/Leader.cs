@@ -12,17 +12,24 @@ public class Leader : MonoBehaviour
 
     [SerializeField] public float _maxSpeed, life, maxLife;
     private float timer;
-    Collider minCollider;
-    [SerializeField] private LayerMask nodes;
+
+    private Collider minCollider;
+    [SerializeField] public LayerMask nodes, obstacles;
+
+    [Header("Obstacle Avoidance")]
+    public int numberOfRays;
+    public float angle = 90;
+
+
     [Header("FOV")]
-    [SerializeField] public float _viewRadius;
-    [SerializeField] public float _viewAngle;
-    [SerializeField] public LayerMask obstacleLayer;
+    [SerializeField] private float _viewRadius;
+    [SerializeField] private float _viewAngle;
+    [SerializeField] private LayerMask obstacleLayer;
 
+    [Header("Pathfinding")]
     public Node _startingNode, _goalNode;
-    public bool _startSearch = false;
-    public bool _hasReachNode = false;
-
+    //public bool _startSearch = false;
+    //public bool _hasReachNode = false;
     List<Node> _pathToFollow;
     Pathfinding _pathfinding;
 
@@ -90,9 +97,10 @@ public class Leader : MonoBehaviour
 
 
     private void OnDrawGizmos()
-    {
-        Gizmos.color = Color.cyan;
-        Gizmos.DrawWireSphere(transform.position, _viewRadius);
+    {  
+        ///FOV Gizmos
+        //Gizmos.color = Color.cyan;
+        //Gizmos.DrawWireSphere(transform.position, _viewRadius);
 
         var realAngle = _viewAngle / 2;
 
@@ -102,6 +110,17 @@ public class Leader : MonoBehaviour
 
         Vector3 lineRight = GetDirFromAngle(realAngle + transform.eulerAngles.y);
         Gizmos.DrawLine(transform.position, transform.position + lineRight * _viewRadius);
+
+        ///
+        /// Obstacle Avoidance Gizmos
+        for (int i = 0; i < numberOfRays; i++)
+        {
+            var rotation = this.transform.rotation;
+            var rotationMod = Quaternion.AngleAxis((i / ((float)numberOfRays - 1)) * angle * 2 - angle, this.transform.up);
+            var direction = rotation * rotationMod * Vector3.forward;
+            Gizmos.DrawRay(this.transform.position, direction);
+        }
+        ///
     }
 
     Vector3 GetDirFromAngle(float angle)
