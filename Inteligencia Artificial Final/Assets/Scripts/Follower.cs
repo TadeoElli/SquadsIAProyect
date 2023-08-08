@@ -2,10 +2,9 @@ using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 
-public class Leader : MonoBehaviour
+public class Follower : MonoBehaviour
 {
-    // Start is called before the first frame update
-    FSM<LeaderStates> _FSM;
+    FSM<FollowerStates> _FSM;
 
     Material _myMaterial;
     [SerializeField]Color _originalColor;
@@ -19,7 +18,24 @@ public class Leader : MonoBehaviour
     public int numberOfRays;
     public float angle = 90;
 
+    [SerializeField] float _maxForce;
+    [SerializeField] float distance;
+    [SerializeField] float _distanceToDie;
+    public Vector3 _velocity;
 
+    [Header("SEEK")]
+    SeekSteering _mySeekSteering;
+    [Header("ARRIVE")]
+    [SerializeField] private bool _isArriving;
+    [SerializeField] private float _arriveRadius;
+    [SerializeField] private Transform arriveTarget;
+    ArriveSteering _myArriveSteering;
+
+    [Header("FLOCKING")]
+    Separation _mySeparationSteering;
+    Alignment _myAlignmentSteering;
+    Cohesion _myCohesionSteering;
+    
     [Header("FOV")]
     [SerializeField] private float _viewRadius;
     [SerializeField] private float _viewAngle;
@@ -31,59 +47,25 @@ public class Leader : MonoBehaviour
     //public bool _hasReachNode = false;
     List<Node> _pathToFollow;
     Pathfinding _pathfinding;
-
-
-    void Awake()
+    private void Start() 
     {
-        _FSM = new FSM<LeaderStates>();
+        FollowersManager.Instance.RegisterNewFollower(this);
+        _myArriveSteering = new ArriveSteering(transform, _maxSpeed, _maxForce, _arriveRadius);
+        _mySeekSteering = new SeekSteering(transform, _maxSpeed, _maxForce);
 
-        _myMaterial = GetComponent<Renderer>().material;
+        _mySeparationSteering = new Separation(transform, _maxSpeed, _maxForce);
+        _myAlignmentSteering = new Alignment(transform, _maxSpeed, _maxForce);
+        _myCohesionSteering = new Cohesion(transform, _maxSpeed, _maxForce);
 
-        _pathToFollow = new List<Node>();
-        _pathfinding = new Pathfinding();
-        maxLife = 100;
-        life = maxLife;
-        _myMaterial.color = _originalColor;
-
-        IState idle = new LeaderIdleState(_FSM, this);
-        _FSM.AddState(LeaderStates.Idle, new LeaderIdleState(_FSM, this));
-
-        _FSM.AddState(LeaderStates.Search, new LeaderSearchState(_FSM, this, _pathToFollow, _pathfinding));
-
-        _FSM.ChangeState(LeaderStates.Idle);
+        Vector3 random = new Vector3(Random.Range(-1f, 1f), 0, Random.Range(-1f, 1f));
     }
 
-
+    // Update is called once per frame
     void Update()
     {
-        _FSM.Update();
-        _FSM.FixedUpdate();
+        
     }
 
-    public void SetGoalNode(Node node)
-    {
-        SetStartingNode();
-        _goalNode = node;
-        _FSM.ChangeState(LeaderStates.Search);
-    }
-    void SetStartingNode()
-    {
-        Collider[] hitColliders = Physics.OverlapSphere(this.transform.position, 5f, nodes);
-        float minDistance = 10f;
-        
-        foreach (var hitCollider in hitColliders)
-        {
-            Vector3 pos = hitCollider.GetComponent<Transform>().position;
-            //Debug.Log(pos +"" + hitCollider);
-            if(Vector3.Distance(this.transform.position, pos) < minDistance)
-            {
-                minDistance = Vector3.Distance(this.transform.position, pos);
-                minCollider = hitCollider;
-            }
-        }
-        _startingNode = minCollider.GetComponent<Node>();
-    }
-    
     public void ChangeColor(Color newColor)
     {
         _myMaterial.color = newColor;
@@ -93,8 +75,12 @@ public class Leader : MonoBehaviour
     {
         _myMaterial.color = _originalColor;
     }
+    void AddForce(Vector3 force)
+    {
+        _velocity += force;
 
-
+        _velocity = Vector3.ClampMagnitude(_velocity, _maxSpeed);
+    }
     private void OnDrawGizmos()
     {  
         ///FOV Gizmos
@@ -121,7 +107,7 @@ public class Leader : MonoBehaviour
         }
         ///
     }
-
+    
     Vector3 GetDirFromAngle(float angle)
     {
         return new Vector3(Mathf.Sin(angle * Mathf.Deg2Rad), 0, Mathf.Cos(angle * Mathf.Deg2Rad));
@@ -142,12 +128,4 @@ public class Leader : MonoBehaviour
         
 
     }
-
-    /*public bool InLineOfSight(Vector3 direction)
-    {
-        Debug.DrawLine(transform.position, _player.transform.position, Color.red);
-        return Physics.Raycast(transform.position, direction, _viewRadius, obstacleLayer);
-    }
-    */
 }
-
