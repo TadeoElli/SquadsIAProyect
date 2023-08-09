@@ -13,7 +13,7 @@ public class Leader : MonoBehaviour
     [SerializeField] public float _maxSpeed, life, maxLife;
 
     private Collider minCollider;
-    [SerializeField] public LayerMask nodes, obstacles;
+    [SerializeField] public LayerMask nodes, obstacles, walls;
 
     [Header("Obstacle Avoidance")]
     public int numberOfRays;
@@ -27,8 +27,8 @@ public class Leader : MonoBehaviour
 
     [Header("Pathfinding")]
     public Node _startingNode, _goalNode;
-    //public bool _startSearch = false;
-    //public bool _hasReachNode = false;
+    [HideInInspector] public bool isEvadingObstacles = false;
+    [HideInInspector] public bool isEvadingWalls = false;  
     List<Node> _pathToFollow;
     Pathfinding _pathfinding;
 
@@ -146,7 +146,46 @@ public class Leader : MonoBehaviour
         
 
     }
-
+    public void EvadeObstacles(Vector3 dist)
+    {
+        var deltaPosition = Vector3.zero;
+        for (int i = 0; i < numberOfRays; i++)
+        {
+            var rotation = transform.rotation;
+            var rotationMod = Quaternion.AngleAxis((i / ((float)numberOfRays - 1)) * angle * 2 - angle, transform.up);
+            var direction = rotation * rotationMod * Vector3.forward;
+           
+            var ray = new Ray(transform.position, direction);
+            RaycastHit hitInfo;
+            if(Physics.Raycast(ray, out hitInfo, 2))
+                deltaPosition -= (1.0f / numberOfRays) * _maxSpeed * direction;
+            else
+                deltaPosition += (1.0f / numberOfRays) * _maxSpeed * direction;
+        }
+        transform.position += deltaPosition * Time.deltaTime;
+        if(Vector3.Distance(transform.position, dist) < 1f)
+            isEvadingObstacles = false;
+    }
+    public void EvadeWalls(Vector3 dist)
+    {
+        var deltaPosition = Vector3.zero;
+        for (int i = 0; i < numberOfRays; i++)
+        {
+            var rotation = transform.rotation;
+            var rotationMod = Quaternion.AngleAxis((i / ((float)numberOfRays - 1)) * angle * 2 - angle, transform.up);
+            var direction = rotation * rotationMod * Vector3.forward;
+           
+            var ray = new Ray(transform.position, direction);
+            RaycastHit hitInfo;
+            if(Physics.Raycast(ray, out hitInfo, 2))
+                deltaPosition -= (1.0f / numberOfRays) * _maxSpeed * direction;
+            else
+                deltaPosition += (1.0f / numberOfRays) * _maxSpeed * direction;
+        }
+        transform.position += deltaPosition * Time.deltaTime;
+        if(Vector3.Distance(transform.position, dist) < 1f)
+            isEvadingWalls = false;
+    }
     /*public bool InLineOfSight(Vector3 direction)
     {
         Debug.DrawLine(transform.position, _player.transform.position, Color.red);

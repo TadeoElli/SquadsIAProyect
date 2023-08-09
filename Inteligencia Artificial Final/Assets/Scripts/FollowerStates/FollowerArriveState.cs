@@ -44,16 +44,18 @@ public class FollowerArriveState : IState
             _follower.isEvadingObstacles = true;
             _obstacle =  obstacle.GetComponent<Transform>();
         }
-        isInRange = Physics.OverlapSphere(_follower.transform.position, 0.5f, _follower.walls);
-        foreach (var wall in isInRange)
+        Collider[] isInRange2 = Physics.OverlapSphere(_follower.transform.position, 0.5f, _follower.walls);
+        foreach (var wall in isInRange2)
         {
             _follower.isEvadingWalls = true;
             _wall =  wall.GetComponent<Transform>();
         }
         if(_follower.isEvadingObstacles)
-            _follower.EvadeObstacles(_obstacle.position);
+            if(_obstacle != null)
+                _follower.EvadeObstacles(_obstacle.position);
         if(_follower.isEvadingWalls)
-            _follower.EvadeWalls(_wall.position);
+            if(_wall != null)
+                _follower.EvadeWalls(_wall.position);
     }
 
     public void OnExit()

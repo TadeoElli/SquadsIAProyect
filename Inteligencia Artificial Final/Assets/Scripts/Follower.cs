@@ -216,6 +216,6 @@ public class Follower : MonoBehaviour
         //Origen,radio, direccion, distancia maxima y layer mask
         Debug.DrawLine(transform.position, leader.transform.position, Color.red);
         //return Physics.Raycast(this.transform.position, dir, _viewRadius, walls);
-        return Physics.SphereCast(this.transform.position,0.5f, dir, out hit, dir.magnitude, walls);
+        return !Physics.SphereCast(this.transform.position,0.5f, dir, out hit, dir.magnitude, walls);
     }
 }

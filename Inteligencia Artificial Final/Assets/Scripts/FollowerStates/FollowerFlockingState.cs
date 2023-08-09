@@ -18,6 +18,7 @@ public class FollowerFlockingState : IState
 
     public void OnEnter()
     {
+        Debug.Log("Entre");
     }
 
     public void OnUpdate()
@@ -61,9 +62,11 @@ public class FollowerFlockingState : IState
             _wall =  wall.GetComponent<Transform>();
         }
         if(_follower.isEvadingObstacles)
-            _follower.EvadeObstacles(_obstacle.position);
+            if(_obstacle != null)
+                _follower.EvadeObstacles(_obstacle.position);
         if(_follower.isEvadingWalls)
-            _follower.EvadeWalls(_wall.position);
+            if(_wall != null)
+                _follower.EvadeWalls(_wall.position);
     }
 
     public void OnExit()
