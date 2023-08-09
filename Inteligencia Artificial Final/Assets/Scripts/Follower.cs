@@ -88,6 +88,8 @@ public class Follower : MonoBehaviour
     {
         _FSM.Update();
         _FSM.FixedUpdate();
+
+        
     }
 
     public void ChangeColor(Color newColor)
@@ -106,6 +108,23 @@ public class Follower : MonoBehaviour
         _velocity = Vector3.ClampMagnitude(_velocity, _maxSpeed);
     }
 
+    public void SetGoalNode()
+    {
+        Collider[] hitColliders = Physics.OverlapSphere(leader.position, 5f, nodes);
+        float minDistance = 10f;
+        
+        foreach (var hitCollider in hitColliders)
+        {
+            Vector3 pos = hitCollider.GetComponent<Transform>().position;
+            //Debug.Log(pos +"" + hitCollider);
+            if(Vector3.Distance(leader.position, pos) < minDistance)
+            {
+                minDistance = Vector3.Distance(leader.position, pos);
+                minCollider = hitCollider;
+            }
+        }
+        _goalNode = minCollider.GetComponent<Node>();
+    }
     public void SetStartingNode()
     {
         Collider[] hitColliders = Physics.OverlapSphere(this.transform.position, 5f, nodes);
@@ -214,8 +233,8 @@ public class Follower : MonoBehaviour
         Vector3 dir = end - this.transform.position;
         RaycastHit hit;
         //Origen,radio, direccion, distancia maxima y layer mask
-        Debug.DrawLine(transform.position, leader.transform.position, Color.red);
-        //return Physics.Raycast(this.transform.position, dir, _viewRadius, walls);
+        //Debug.DrawLine(transform.position, leader.transform.position, Color.red);
+        //return !Physics.Raycast(this.transform.position, dir, 99, walls);
         return !Physics.SphereCast(this.transform.position,0.5f, dir, out hit, dir.magnitude, walls);
     }
 }

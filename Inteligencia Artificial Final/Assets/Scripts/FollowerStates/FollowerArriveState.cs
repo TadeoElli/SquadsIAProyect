@@ -19,6 +19,7 @@ public class FollowerArriveState : IState
 
     public void OnEnter()
     {
+        Debug.Log("Arrive");
     }
 
     public void OnUpdate()
@@ -27,9 +28,22 @@ public class FollowerArriveState : IState
 
         _follower.transform.forward = _follower._velocity;
 
-        _follower.AddForce(_follower._myArriveSteering.Execute(_follower._velocity, _follower.leader));
-        if(Vector3.Distance(_follower.transform.position, _follower.leader.position) < _follower._distanceToLeader)
-            _fsm.ChangeState(FollowerStates.Flocking);
+        if(Vector3.Distance(_follower.transform.position, _follower.leader.position) > _follower._distanceToLeader)
+            _follower.AddForce(_follower._myArriveSteering.Execute(_follower._velocity, _follower.leader));
+        else
+        {
+            if(_follower.gameObject.tag == "Team1")
+                _follower.AddForce(_follower._mySeparationSteering.Execute(_follower._velocity,_follower.gameObject) * FollowersManagerTeam1.Instance.SeparationWeight +
+                        _follower._myAlignmentSteering.Execute(_follower._velocity,_follower.gameObject) * FollowersManagerTeam1.Instance.AlignmentWeight +
+                        _follower._myCohesionSteering.Execute(_follower._velocity,_follower.gameObject) * FollowersManagerTeam1.Instance.CohesionWeight);
+            if(_follower.gameObject.tag == "Team2")
+                _follower.AddForce(_follower._mySeparationSteering.Execute(_follower._velocity,_follower.gameObject) * FollowersManagerTeam2.Instance.SeparationWeight +
+                        _follower._myAlignmentSteering.Execute(_follower._velocity,_follower.gameObject) * FollowersManagerTeam2.Instance.AlignmentWeight +
+                        _follower._myCohesionSteering.Execute(_follower._velocity,_follower.gameObject) * FollowersManagerTeam2.Instance.CohesionWeight);
+        }
+        
+        if(!_follower.InLineOfSight(_follower.leader.position))
+            _fsm.ChangeState(FollowerStates.Search);
         /*if (!_follower.InFieldOfView(_follower.leader.transform.position))
         {
             _fsm.ChangeState(FollowerStates.Search);

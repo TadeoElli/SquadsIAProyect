@@ -38,7 +38,7 @@ public class FollowersManagerTeam1 : MonoBehaviour
         if (!AllFollowers.Contains(newFollower))
             AllFollowers.Add(newFollower);
     }
-
+    /*
     public void SetLeaderNode(Node node)
     {
         foreach (var follower in AllFollowers)
@@ -47,5 +47,6 @@ public class FollowersManagerTeam1 : MonoBehaviour
             follower._FSM.ChangeState(FollowerStates.Search);
         }
     }
+    */
 }
 

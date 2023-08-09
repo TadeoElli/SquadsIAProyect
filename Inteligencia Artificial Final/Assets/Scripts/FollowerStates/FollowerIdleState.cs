@@ -20,8 +20,10 @@ public class FollowerIdleState : IState
 
     public void OnEnter()
     {
-
-        
+        if(!_follower.InLineOfSight(_follower.leader.position))
+            _fsm.ChangeState(FollowerStates.Search);
+        else
+            _fsm.ChangeState(FollowerStates.Arrive); 
     }
 
     public void OnUpdate()

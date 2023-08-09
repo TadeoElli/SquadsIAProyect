@@ -24,19 +24,18 @@ public class FollowerSearchState : IState
     public void OnEnter()
     {
         _follower.SetStartingNode();
+        _follower.SetGoalNode();
+        Debug.Log("Search");
         _pathToFollow = _pathfinding.ThetaStar(_follower._startingNode, _follower._goalNode);
     }
 
     public void OnUpdate()
     {
-        if (_follower.InLineOfSight(_follower.leader.position))
-        {
+        FollowPath();
+        if(_pathToFollow.Count == 0)
+            _fsm.ChangeState(FollowerStates.Idle);
+        if(_follower.InLineOfSight(_follower.leader.position))
             _fsm.ChangeState(FollowerStates.Arrive);
-        }
-        else
-        {
-            FollowPath();
-        }
     }
 
     public void OnFixedUpdate()
