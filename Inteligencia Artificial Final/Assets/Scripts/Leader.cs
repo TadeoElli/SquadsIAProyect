@@ -64,6 +64,10 @@ public class Leader : MonoBehaviour
     {
         SetStartingNode();
         _goalNode = node;
+        if(this.gameObject.tag == "Team1")
+            FollowersManagerTeam1.Instance.SetLeaderNode(_startingNode);
+        if(this.gameObject.tag == "Team2")
+            FollowersManagerTeam2.Instance.SetLeaderNode(_startingNode);
         _FSM.ChangeState(LeaderStates.Search);
     }
     void SetStartingNode()

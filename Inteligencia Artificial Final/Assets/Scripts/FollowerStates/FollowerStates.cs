@@ -2,8 +2,8 @@ public enum FollowerStates
 {
     Idle,
     Search,
-    Patrol,
+    Arrive,
     Shoot,
-    Evade,
+    Flocking,
     Return
 }

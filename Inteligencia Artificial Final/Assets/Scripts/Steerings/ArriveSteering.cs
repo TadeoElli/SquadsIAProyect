@@ -20,7 +20,7 @@ public class ArriveSteering
 
     public Vector3 Execute(Vector3 currentFollowerVelocity,Transform target)
     {
-        Vector3 desired = target.position - _myTransform.position;
+        Vector3 desired = (target.position - (target.forward * 2f)) - _myTransform.position;
 
         float desiredMagnitude = desired.magnitude;
         float speed = _maxSpeed;

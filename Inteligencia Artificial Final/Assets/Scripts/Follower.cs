@@ -4,7 +4,7 @@ using UnityEngine;
 
 public class Follower : MonoBehaviour
 {
-    FSM<FollowerStates> _FSM;
+    public FSM<FollowerStates> _FSM;
 
     Material _myMaterial;
     [SerializeField]Color _originalColor;
@@ -12,7 +12,7 @@ public class Follower : MonoBehaviour
     [SerializeField] public float _maxSpeed, life, maxLife;
 
     private Collider minCollider;
-    [SerializeField] public LayerMask nodes, obstacles;
+    [SerializeField] public LayerMask nodes, obstacles, walls;
 
     [Header("Obstacle Avoidance")]
     public int numberOfRays;
@@ -20,7 +20,7 @@ public class Follower : MonoBehaviour
 
     [SerializeField] float _maxForce;
     [SerializeField] float distance;
-    [SerializeField] float _distanceToDie;
+    [SerializeField] public float _distanceToLeader;
     public Vector3 _velocity;
 
     [Header("SEEK")]
@@ -28,28 +28,49 @@ public class Follower : MonoBehaviour
     [Header("ARRIVE")]
     [SerializeField] private bool _isArriving;
     [SerializeField] private float _arriveRadius;
-    [SerializeField] private Transform arriveTarget;
-    ArriveSteering _myArriveSteering;
+    [SerializeField] public Transform leader;
+    public ArriveSteering _myArriveSteering;
 
     [Header("FLOCKING")]
-    Separation _mySeparationSteering;
-    Alignment _myAlignmentSteering;
-    Cohesion _myCohesionSteering;
+    public Separation _mySeparationSteering;
+    public Alignment _myAlignmentSteering;
+    public Cohesion _myCohesionSteering;
     
     [Header("FOV")]
     [SerializeField] private float _viewRadius;
     [SerializeField] private float _viewAngle;
-    [SerializeField] private LayerMask obstacleLayer;
 
     [Header("Pathfinding")]
     public Node _startingNode, _goalNode;
+    [HideInInspector] public bool isEvadingObstacles = false;
+    [HideInInspector] public bool isEvadingWalls = false;  
     //public bool _startSearch = false;
     //public bool _hasReachNode = false;
     List<Node> _pathToFollow;
     Pathfinding _pathfinding;
     private void Start() 
     {
-        FollowersManager.Instance.RegisterNewFollower(this);
+        _FSM = new FSM<FollowerStates>();
+        _myMaterial = GetComponent<Renderer>().material;
+
+        _pathToFollow = new List<Node>();
+        _pathfinding = new Pathfinding();
+        maxLife = 100;
+        life = maxLife;
+        _myMaterial.color = _originalColor;
+
+        IState idle = new FollowerIdleState(_FSM, this);
+        _FSM.AddState(FollowerStates.Idle, new FollowerIdleState(_FSM, this));
+
+        _FSM.AddState(FollowerStates.Search, new FollowerSearchState(_FSM, this, _pathToFollow, _pathfinding));
+        _FSM.AddState(FollowerStates.Arrive, new FollowerArriveState(_FSM, this));
+        _FSM.AddState(FollowerStates.Flocking, new FollowerFlockingState(_FSM, this));
+
+        if(this.gameObject.tag == "Team1")
+            FollowersManagerTeam1.Instance.RegisterNewFollower(this);
+        if(this.gameObject.tag == "Team2")
+            FollowersManagerTeam2.Instance.RegisterNewFollower(this);
+        
         _myArriveSteering = new ArriveSteering(transform, _maxSpeed, _maxForce, _arriveRadius);
         _mySeekSteering = new SeekSteering(transform, _maxSpeed, _maxForce);
 
@@ -57,13 +78,16 @@ public class Follower : MonoBehaviour
         _myAlignmentSteering = new Alignment(transform, _maxSpeed, _maxForce);
         _myCohesionSteering = new Cohesion(transform, _maxSpeed, _maxForce);
 
-        Vector3 random = new Vector3(Random.Range(-1f, 1f), 0, Random.Range(-1f, 1f));
+        
+
+        _FSM.ChangeState(FollowerStates.Idle);
     }
 
     // Update is called once per frame
     void Update()
     {
-        
+        _FSM.Update();
+        _FSM.FixedUpdate();
     }
 
     public void ChangeColor(Color newColor)
@@ -75,11 +99,29 @@ public class Follower : MonoBehaviour
     {
         _myMaterial.color = _originalColor;
     }
-    void AddForce(Vector3 force)
+    public void AddForce(Vector3 force)
     {
         _velocity += force;
 
         _velocity = Vector3.ClampMagnitude(_velocity, _maxSpeed);
+    }
+
+    public void SetStartingNode()
+    {
+        Collider[] hitColliders = Physics.OverlapSphere(this.transform.position, 5f, nodes);
+        float minDistance = 10f;
+        
+        foreach (var hitCollider in hitColliders)
+        {
+            Vector3 pos = hitCollider.GetComponent<Transform>().position;
+            //Debug.Log(pos +"" + hitCollider);
+            if(Vector3.Distance(this.transform.position, pos) < minDistance)
+            {
+                minDistance = Vector3.Distance(this.transform.position, pos);
+                minCollider = hitCollider;
+            }
+        }
+        _startingNode = minCollider.GetComponent<Node>();
     }
     private void OnDrawGizmos()
     {  
@@ -108,6 +150,46 @@ public class Follower : MonoBehaviour
         ///
     }
     
+    public void EvadeObstacles(Vector3 dist)
+    {
+        var deltaPosition = Vector3.zero;
+        for (int i = 0; i < numberOfRays; i++)
+        {
+            var rotation = transform.rotation;
+            var rotationMod = Quaternion.AngleAxis((i / ((float)numberOfRays - 1)) * angle * 2 - angle, transform.up);
+            var direction = rotation * rotationMod * Vector3.forward;
+           
+            var ray = new Ray(transform.position, direction);
+            RaycastHit hitInfo;
+            if(Physics.Raycast(ray, out hitInfo, 2))
+                deltaPosition -= (1.0f / numberOfRays) * _maxSpeed * direction;
+            else
+                deltaPosition += (1.0f / numberOfRays) * _maxSpeed * direction;
+        }
+        transform.position += deltaPosition * Time.deltaTime;
+        if(Vector3.Distance(transform.position, dist) < 1f)
+            isEvadingObstacles = false;
+    }
+    public void EvadeWalls(Vector3 dist)
+    {
+        var deltaPosition = Vector3.zero;
+        for (int i = 0; i < numberOfRays; i++)
+        {
+            var rotation = transform.rotation;
+            var rotationMod = Quaternion.AngleAxis((i / ((float)numberOfRays - 1)) * angle * 2 - angle, transform.up);
+            var direction = rotation * rotationMod * Vector3.forward;
+           
+            var ray = new Ray(transform.position, direction);
+            RaycastHit hitInfo;
+            if(Physics.Raycast(ray, out hitInfo, 2))
+                deltaPosition -= (1.0f / numberOfRays) * _maxSpeed * direction;
+            else
+                deltaPosition += (1.0f / numberOfRays) * _maxSpeed * direction;
+        }
+        transform.position += deltaPosition * Time.deltaTime;
+        if(Vector3.Distance(transform.position, dist) < 1f)
+            isEvadingWalls = false;
+    }
     Vector3 GetDirFromAngle(float angle)
     {
         return new Vector3(Mathf.Sin(angle * Mathf.Deg2Rad), 0, Mathf.Cos(angle * Mathf.Deg2Rad));
@@ -125,7 +207,15 @@ public class Follower : MonoBehaviour
 
         //Que este dentro del angulo
         return Vector3.Angle(transform.forward, dir) <= _viewAngle/2;
-        
+    }
 
+    public bool InLineOfSight(Vector3 end)
+    {
+        Vector3 dir = end - this.transform.position;
+        RaycastHit hit;
+        //Origen,radio, direccion, distancia maxima y layer mask
+        Debug.DrawLine(transform.position, leader.transform.position, Color.red);
+        //return Physics.Raycast(this.transform.position, dir, _viewRadius, walls);
+        return Physics.SphereCast(this.transform.position,0.5f, dir, out hit, dir.magnitude, walls);
     }
 }

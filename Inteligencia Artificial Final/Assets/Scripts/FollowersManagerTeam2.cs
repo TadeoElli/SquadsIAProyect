@@ -2,9 +2,9 @@ using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 
-public class FollowersManager : MonoBehaviour
+public class FollowersManagerTeam2 : MonoBehaviour
 {
-    public static FollowersManager Instance { get; private set; }
+    public static FollowersManagerTeam2 Instance { get; private set; }
 
     public List<Follower> AllFollowers { get; private set; }
 
@@ -37,6 +37,15 @@ public class FollowersManager : MonoBehaviour
     {
         if (!AllFollowers.Contains(newFollower))
             AllFollowers.Add(newFollower);
+    }
+
+    public void SetLeaderNode(Node node)
+    {
+        foreach (var follower in AllFollowers)
+        {
+            follower._goalNode = node;
+            follower._FSM.ChangeState(FollowerStates.Search);
+        }
     }
 }
 

@@ -24,7 +24,7 @@ public class Cohesion
         //Contador para acumular cantidad de followers a promediar
         int count = 0;
 
-        foreach (Follower follower in FollowersManager.Instance.AllFollowers)
+        foreach (Follower follower in FollowersManagerTeam1.Instance.AllFollowers)
         {
             if(follower != null)
             {
@@ -35,7 +35,28 @@ public class Cohesion
                 Vector3 dirToFollower = follower.transform.position - _myTransform.position;
 
                 //Si esta dentro del rango de vision
-                if (dirToFollower.sqrMagnitude <= FollowersManager.Instance.ViewRadius)
+                if (dirToFollower.sqrMagnitude <= FollowersManagerTeam1.Instance.ViewRadius)
+                {
+                    //Sumo la posicion de cada follower
+                    desired += follower.transform.position;
+
+                    //Sumo uno mas a mi contador para promediar
+                    count++;
+                }
+            }
+        }
+        foreach (Follower follower in FollowersManagerTeam2.Instance.AllFollowers)
+        {
+            if(follower != null)
+            {
+                //Si soy este follower a chequear, ignoro y sigo la iteracion
+                if (follower == gameObject) continue;
+
+                //Saco la direccion hacia el follower
+                Vector3 dirToFollower = follower.transform.position - _myTransform.position;
+
+                //Si esta dentro del rango de vision
+                if (dirToFollower.sqrMagnitude <= FollowersManagerTeam2.Instance.ViewRadius)
                 {
                     //Sumo la posicion de cada follower
                     desired += follower.transform.position;
