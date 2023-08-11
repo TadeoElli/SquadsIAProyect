@@ -127,7 +127,7 @@ MonoBehaviour:
     m_Bits: 0
   numberOfRays: 19
   angle: 90
-  _viewRadius: 15
+  _viewRadius: 7
   _viewAngle: 65
   obstacleLayer:
     serializedVersion: 2
@@ -136,6 +136,8 @@ MonoBehaviour:
   _goalNode: {fileID: 0}
   isEvadingObstacles: 0
   isEvadingWalls: 0
+  enemyLeader: {fileID: 0}
+  enemiesFollowers: []
 --- !u!1 &300044634062111235
 GameObject:
   m_ObjectHideFlags: 0

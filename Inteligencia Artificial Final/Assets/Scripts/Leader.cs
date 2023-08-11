@@ -13,7 +13,7 @@ public class Leader : MonoBehaviour
     [SerializeField] public float _maxSpeed, life, maxLife;
 
     private Collider minCollider;
-    [SerializeField] public LayerMask nodes, obstacles, walls;
+    [SerializeField] public LayerMask nodes, obstacles, walls, bullets;
 
     [Header("Obstacle Avoidance")]
     public int numberOfRays;
@@ -32,6 +32,13 @@ public class Leader : MonoBehaviour
     List<Node> _pathToFollow;
     Pathfinding _pathfinding;
 
+    [Header("Combat")]
+    [SerializeField] public Leader enemyLeader;
+    [SerializeField] public List<Follower> enemiesFollowers;
+    [SerializeField] public Bullet model;
+    [SerializeField] private float bulletTimer;
+    private float timer;
+    public bool isBulletCooldown;
 
     void Awake()
     {
@@ -49,15 +56,33 @@ public class Leader : MonoBehaviour
         _FSM.AddState(LeaderStates.Idle, new LeaderIdleState(_FSM, this));
 
         _FSM.AddState(LeaderStates.Search, new LeaderSearchState(_FSM, this, _pathToFollow, _pathfinding));
+        _FSM.AddState(LeaderStates.Shoot, new LeaderShootState(_FSM, this));
 
         _FSM.ChangeState(LeaderStates.Idle);
     }
 
 
+    private void Start() 
+    {
+        if(this.gameObject.tag == "Team1")
+            enemiesFollowers = FollowersManagerTeam2.Instance.AllFollowers;
+        if(this.gameObject.tag == "Team2")
+            enemiesFollowers = FollowersManagerTeam1.Instance.AllFollowers;
+    }
     void Update()
     {
         _FSM.Update();
         _FSM.FixedUpdate();
+        if(isBulletCooldown)
+            ShootCooldown();
+        else
+            if(InFieldOfView(enemyLeader.transform.position))
+                Shoot();
+            foreach (var enemies in enemiesFollowers)
+            {
+                if(InFieldOfView(enemies.transform.position))
+                    Shoot();
+            }
     }
 
     public void SetGoalNode(Node node)
@@ -83,7 +108,12 @@ public class Leader : MonoBehaviour
         }
         _startingNode = minCollider.GetComponent<Node>();
     }
-    
+    void ReceiveDamage()
+    {
+        life = life - 10;
+        _myMaterial.color = Color.red;
+        Invoke("RestoreColor", 0.3f);
+    }
     public void ChangeColor(Color newColor)
     {
         _myMaterial.color = newColor;
@@ -94,7 +124,21 @@ public class Leader : MonoBehaviour
         _myMaterial.color = _originalColor;
     }
 
-
+    void Shoot()
+    {
+        Bullet bullet = GameObject.Instantiate(model);
+        bullet.Move(transform.position, transform.forward);
+        
+        isBulletCooldown = true;
+        timer = 0;
+    }
+    void ShootCooldown()
+    {
+        if(timer >= bulletTimer)
+            isBulletCooldown = false;
+        else
+            timer = timer + 1 * Time.deltaTime;
+    }
     private void OnDrawGizmos()
     {  
         ///FOV Gizmos
@@ -135,7 +179,7 @@ public class Leader : MonoBehaviour
         if (dir.sqrMagnitude > _viewRadius * _viewRadius) return false;
 
         //Que no haya obstaculos
-        //if (InLineOfSight(dir)) return false;
+        if (InLineOfSight(dir)) return false;
 
         //Que este dentro del angulo
         return Vector3.Angle(transform.forward, dir) <= _viewAngle/2;
@@ -182,11 +226,21 @@ public class Leader : MonoBehaviour
         if(Vector3.Distance(transform.position, dist) < 1f)
             isEvadingWalls = false;
     }
-    /*public bool InLineOfSight(Vector3 direction)
+    
+    public bool InLineOfSight(Vector3 direction)
     {
-        Debug.DrawLine(transform.position, _player.transform.position, Color.red);
+        //Debug.DrawLine(transform.position, _player.transform.position, Color.red);
         return Physics.Raycast(transform.position, direction, _viewRadius, obstacleLayer);
     }
-    */
+
+    private void OnCollisionEnter(Collision other) 
+    {
+        if(other.gameObject.layer == bullets)
+            if(this.gameObject.tag == "Team1" && other.gameObject.tag == "Team2")
+                ReceiveDamage();
+            if(this.gameObject.tag == "Team2" && other.gameObject.tag == "Team1")
+                ReceiveDamage();
+    }
+    
 }
 

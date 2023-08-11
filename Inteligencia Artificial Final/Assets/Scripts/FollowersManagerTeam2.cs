@@ -38,6 +38,8 @@ public class FollowersManagerTeam2 : MonoBehaviour
         if (!AllFollowers.Contains(newFollower))
             AllFollowers.Add(newFollower);
     }
+
+
     /*
     public void SetLeaderNode(Node node)
     {

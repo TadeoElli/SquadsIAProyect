@@ -19,14 +19,12 @@ public class Follower : MonoBehaviour
     public float angle = 90;
 
     [SerializeField] float _maxForce;
-    [SerializeField] float distance;
     [SerializeField] public float _distanceToLeader;
     public Vector3 _velocity;
 
     [Header("SEEK")]
     SeekSteering _mySeekSteering;
     [Header("ARRIVE")]
-    [SerializeField] private bool _isArriving;
     [SerializeField] private float _arriveRadius;
     [SerializeField] public Transform leader;
     public ArriveSteering _myArriveSteering;
