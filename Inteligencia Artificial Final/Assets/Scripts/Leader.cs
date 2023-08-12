@@ -108,7 +108,7 @@ public class Leader : MonoBehaviour
         }
         _startingNode = minCollider.GetComponent<Node>();
     }
-    void ReceiveDamage()
+    public void ReceiveDamage()
     {
         life = life - 10;
         _myMaterial.color = Color.red;
@@ -127,6 +127,10 @@ public class Leader : MonoBehaviour
     void Shoot()
     {
         Bullet bullet = GameObject.Instantiate(model);
+        if(this.gameObject.tag == "Team1")
+            bullet.gameObject.tag = "Team1";
+        if(this.gameObject.tag == "Team2")
+            bullet.gameObject.tag = "Team2";
         bullet.Move(transform.position, transform.forward);
         
         isBulletCooldown = true;
@@ -233,13 +237,21 @@ public class Leader : MonoBehaviour
         return Physics.Raycast(transform.position, direction, _viewRadius, obstacleLayer);
     }
 
-    private void OnCollisionEnter(Collision other) 
+    private void OnCollisionEnter(Collision other)
     {
         if(other.gameObject.layer == bullets)
+            //Debug.Log("Daño");
             if(this.gameObject.tag == "Team1" && other.gameObject.tag == "Team2")
+            {
                 ReceiveDamage();
+                Destroy(other.gameObject);
+            }
             if(this.gameObject.tag == "Team2" && other.gameObject.tag == "Team1")
+            {
                 ReceiveDamage();
+                Destroy(other.gameObject);
+            }
+
     }
     
 }

@@ -2056,9 +2056,21 @@ PrefabInstance:
       propertyPath: enemyLeader
       value: 
       objectReference: {fileID: 414376467}
+    - target: {fileID: 300044633522199249, guid: 37a67e667a9a04d428ddb54879bccb2c, type: 3}
+      propertyPath: walls.m_Bits
+      value: 256
+      objectReference: {fileID: 0}
+    - target: {fileID: 300044633522199249, guid: 37a67e667a9a04d428ddb54879bccb2c, type: 3}
+      propertyPath: bullets.m_Bits
+      value: 4096
+      objectReference: {fileID: 0}
     - target: {fileID: 300044633522199258, guid: 37a67e667a9a04d428ddb54879bccb2c, type: 3}
       propertyPath: m_Name
       value: Leader 2
+      objectReference: {fileID: 0}
+    - target: {fileID: 300044633522199261, guid: 37a67e667a9a04d428ddb54879bccb2c, type: 3}
+      propertyPath: m_IsTrigger
+      value: 0
       objectReference: {fileID: 0}
     - target: {fileID: 300044633522199262, guid: 37a67e667a9a04d428ddb54879bccb2c, type: 3}
       propertyPath: m_RootOrder
@@ -17665,6 +17677,14 @@ PrefabInstance:
       propertyPath: enemyLeader
       value: 
       objectReference: {fileID: 1160868512}
+    - target: {fileID: 6289504048937808221, guid: 795451dd055348f4a9bd6acbdc8d47d9, type: 3}
+      propertyPath: walls.m_Bits
+      value: 256
+      objectReference: {fileID: 0}
+    - target: {fileID: 6289504048937808221, guid: 795451dd055348f4a9bd6acbdc8d47d9, type: 3}
+      propertyPath: bullets.m_Bits
+      value: 4096
+      objectReference: {fileID: 0}
     m_RemovedComponents: []
   m_SourcePrefab: {fileID: 100100000, guid: 795451dd055348f4a9bd6acbdc8d47d9, type: 3}
 --- !u!1 &1938648428

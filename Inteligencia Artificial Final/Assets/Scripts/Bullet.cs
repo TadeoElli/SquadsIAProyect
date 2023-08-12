@@ -8,7 +8,7 @@ public class Bullet : MonoBehaviour
     [SerializeField] private float time = 1f;
     float timer;
     Vector3 pos;
-    [SerializeField] private LayerMask layer;
+    [SerializeField] private LayerMask walls, leader, follower;
     void Start()
     {
         
@@ -30,10 +30,12 @@ public class Bullet : MonoBehaviour
         transform.position = pos;
         transform.forward = dir;
     }
-    private void OnTriggerEnter(Collider other) 
+    private void OnCollisionEnter(Collision other) 
     {
-        if(other.gameObject.layer == layer)
-            Destroy(this.gameObject);
+        if(other.gameObject.layer == walls)
+            Destroy(gameObject);
+        if(other.gameObject.layer == leader || other.gameObject.layer == follower)
+            Destroy(gameObject);
 
     }
 }
