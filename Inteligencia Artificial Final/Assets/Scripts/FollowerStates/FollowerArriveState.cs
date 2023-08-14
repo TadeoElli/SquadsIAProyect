@@ -19,7 +19,7 @@ public class FollowerArriveState : IState
 
     public void OnEnter()
     {
-        Debug.Log("Arrive");
+        //Debug.Log("Arrive");
     }
 
     public void OnUpdate()

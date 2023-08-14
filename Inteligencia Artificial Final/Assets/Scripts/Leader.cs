@@ -13,7 +13,7 @@ public class Leader : MonoBehaviour
     [SerializeField] public float _maxSpeed, life, maxLife;
 
     private Collider minCollider;
-    [SerializeField] public LayerMask nodes, obstacles, walls, bullets;
+    [SerializeField] public LayerMask nodes, obstacles, walls;
 
     [Header("Obstacle Avoidance")]
     public int numberOfRays;
@@ -23,12 +23,12 @@ public class Leader : MonoBehaviour
     [Header("FOV")]
     [SerializeField] private float _viewRadius;
     [SerializeField] private float _viewAngle;
-    [SerializeField] private LayerMask obstacleLayer;
 
     [Header("Pathfinding")]
-    public Node _startingNode, _goalNode;
+    public Node _startingNode, _goalNode, _baseNode;
     [HideInInspector] public bool isEvadingObstacles = false;
     [HideInInspector] public bool isEvadingWalls = false;  
+    [HideInInspector] public bool isRetreating = false;  
     List<Node> _pathToFollow;
     Pathfinding _pathfinding;
 
@@ -54,8 +54,11 @@ public class Leader : MonoBehaviour
 
         IState idle = new LeaderIdleState(_FSM, this);
         _FSM.AddState(LeaderStates.Idle, new LeaderIdleState(_FSM, this));
+        _FSM.AddState(LeaderStates.Recovering, new LeaderRecoverState(_FSM, this));
 
         _FSM.AddState(LeaderStates.Search, new LeaderSearchState(_FSM, this, _pathToFollow, _pathfinding));
+        _FSM.AddState(LeaderStates.Retreat, new LeaderRetreatState(_FSM, this, _pathToFollow, _pathfinding));
+
         _FSM.AddState(LeaderStates.Shoot, new LeaderShootState(_FSM, this));
 
         _FSM.ChangeState(LeaderStates.Idle);
@@ -73,25 +76,28 @@ public class Leader : MonoBehaviour
     {
         _FSM.Update();
         _FSM.FixedUpdate();
-        if(isBulletCooldown)
-            ShootCooldown();
-        else
-            if(InFieldOfView(enemyLeader.transform.position))
-                Shoot();
-            foreach (var enemies in enemiesFollowers)
-            {
-                if(InFieldOfView(enemies.transform.position))
-                    Shoot();
-            }
+
+        if(InFieldOfView(enemyLeader.transform.position) && !isRetreating)
+            _FSM.ChangeState(LeaderStates.Shoot);
+        foreach (var enemies in enemiesFollowers)
+        {
+            if(InFieldOfView(enemies.transform.position) && !isRetreating)
+                _FSM.ChangeState(LeaderStates.Shoot);
+        }
+        
     }
 
     public void SetGoalNode(Node node)
     {
-        SetStartingNode();
-        _goalNode = node;
-        _FSM.ChangeState(LeaderStates.Search);
+        if(!isRetreating)
+        {
+            SetStartingNode();
+            _goalNode = node;
+            _FSM.ChangeState(LeaderStates.Search);
+        }
+        
     }
-    void SetStartingNode()
+    public void SetStartingNode()
     {
         Collider[] hitColliders = Physics.OverlapSphere(this.transform.position, 5f, nodes);
         float minDistance = 10f;
@@ -124,7 +130,7 @@ public class Leader : MonoBehaviour
         _myMaterial.color = _originalColor;
     }
 
-    void Shoot()
+    public void Shoot()
     {
         Bullet bullet = GameObject.Instantiate(model);
         if(this.gameObject.tag == "Team1")
@@ -132,11 +138,12 @@ public class Leader : MonoBehaviour
         if(this.gameObject.tag == "Team2")
             bullet.gameObject.tag = "Team2";
         bullet.Move(transform.position, transform.forward);
+        bullet.transform.parent = transform;
         
         isBulletCooldown = true;
         timer = 0;
     }
-    void ShootCooldown()
+    public void ShootCooldown()
     {
         if(timer >= bulletTimer)
             isBulletCooldown = false;
@@ -234,24 +241,19 @@ public class Leader : MonoBehaviour
     public bool InLineOfSight(Vector3 direction)
     {
         //Debug.DrawLine(transform.position, _player.transform.position, Color.red);
-        return Physics.Raycast(transform.position, direction, _viewRadius, obstacleLayer);
+        return Physics.Raycast(transform.position, direction, _viewRadius, walls);
     }
 
-    private void OnCollisionEnter(Collision other)
+    void OnTriggerEnter(Collider other)
     {
-        if(other.gameObject.layer == bullets)
+        if(other.gameObject.layer == 12)
             //Debug.Log("Daño");
-            if(this.gameObject.tag == "Team1" && other.gameObject.tag == "Team2")
+            if((this.gameObject.tag == "Team1" && other.gameObject.tag == "Team2") || (this.gameObject.tag == "Team2" && other.gameObject.tag == "Team1"))
             {
                 ReceiveDamage();
-                Destroy(other.gameObject);
             }
-            if(this.gameObject.tag == "Team2" && other.gameObject.tag == "Team1")
-            {
-                ReceiveDamage();
-                Destroy(other.gameObject);
-            }
-
+        
+            
     }
     
 }

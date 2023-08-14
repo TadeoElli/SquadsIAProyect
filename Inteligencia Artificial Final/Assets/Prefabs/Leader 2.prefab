@@ -124,20 +124,21 @@ MonoBehaviour:
     m_Bits: 1024
   walls:
     serializedVersion: 2
-    m_Bits: 0
+    m_Bits: 256
   numberOfRays: 19
   angle: 90
   _viewRadius: 7
   _viewAngle: 65
-  obstacleLayer:
-    serializedVersion: 2
-    m_Bits: 256
   _startingNode: {fileID: 0}
   _goalNode: {fileID: 0}
+  _baseNode: {fileID: 0}
   isEvadingObstacles: 0
   isEvadingWalls: 0
   enemyLeader: {fileID: 0}
   enemiesFollowers: []
+  model: {fileID: 1916479040426758346, guid: 6e3a9ecb28d26994ca8d3594f3fb516a, type: 3}
+  bulletTimer: 5
+  isBulletCooldown: 0
 --- !u!1 &300044634062111235
 GameObject:
   m_ObjectHideFlags: 0

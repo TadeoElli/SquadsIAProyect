@@ -8,7 +8,6 @@ public class Bullet : MonoBehaviour
     [SerializeField] private float time = 1f;
     float timer;
     Vector3 pos;
-    [SerializeField] private LayerMask walls, leader, follower;
     void Start()
     {
         
@@ -30,11 +29,11 @@ public class Bullet : MonoBehaviour
         transform.position = pos;
         transform.forward = dir;
     }
-    private void OnCollisionEnter(Collision other) 
+    private void OnTriggerEnter(Collider other) 
     {
-        if(other.gameObject.layer == walls)
+        if(other.gameObject.layer == 8 )
             Destroy(gameObject);
-        if(other.gameObject.layer == leader || other.gameObject.layer == follower)
+        if((other.gameObject.layer == 9 || other.gameObject.layer == 11) && other.gameObject != this.transform.parent)
             Destroy(gameObject);
 
     }

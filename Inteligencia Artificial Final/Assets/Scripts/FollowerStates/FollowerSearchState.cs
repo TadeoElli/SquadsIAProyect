@@ -25,7 +25,7 @@ public class FollowerSearchState : IState
     {
         _follower.SetStartingNode();
         _follower.SetGoalNode();
-        Debug.Log("Search");
+        //Debug.Log("Search");
         _pathToFollow = _pathfinding.ThetaStar(_follower._startingNode, _follower._goalNode);
     }
 
