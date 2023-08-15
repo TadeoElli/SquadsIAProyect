@@ -18,7 +18,8 @@ public class FollowerFlockingState : IState
 
     public void OnEnter()
     {
-        Debug.Log("Entre");
+        //Debug.Log("Entre");
+        _follower.canShoot = true;
     }
 
     public void OnUpdate()
@@ -45,6 +46,8 @@ public class FollowerFlockingState : IState
                 _fsm.ChangeState(FollowerStates.Search);
         }
 
+        if(_follower.life <= 20)
+            _fsm.ChangeState(FollowerStates.Retreat);
     }
 
     public void OnFixedUpdate()

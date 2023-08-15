@@ -138,6 +138,7 @@ public class Leader : MonoBehaviour
         if(this.gameObject.tag == "Team2")
             bullet.gameObject.tag = "Team2";
         bullet.Move(transform.position, transform.forward);
+        bullet.parent = this.gameObject;
         bullet.transform.parent = transform;
         
         isBulletCooldown = true;
@@ -247,13 +248,13 @@ public class Leader : MonoBehaviour
     void OnTriggerEnter(Collider other)
     {
         if(other.gameObject.layer == 12)
+        {
             //Debug.Log("Daño");
             if((this.gameObject.tag == "Team1" && other.gameObject.tag == "Team2") || (this.gameObject.tag == "Team2" && other.gameObject.tag == "Team1"))
             {
                 ReceiveDamage();
             }
-        
-            
+        }
     }
     
 }

@@ -229,13 +229,19 @@ MonoBehaviour:
   _distanceToLeader: 5
   _velocity: {x: 0, y: 0, z: 0}
   _arriveRadius: 2.5
-  leader: {fileID: 6289504048937808220, guid: 795451dd055348f4a9bd6acbdc8d47d9, type: 3}
+  leader: {fileID: 0}
   _viewRadius: 15
   _viewAngle: 65
   _startingNode: {fileID: 0}
   _goalNode: {fileID: 0}
   isEvadingObstacles: 0
   isEvadingWalls: 0
+  enemyLeader: {fileID: 0}
+  enemiesFollowers: []
+  model: {fileID: 1916479040426758346, guid: 6e3a9ecb28d26994ca8d3594f3fb516a, type: 3}
+  bulletTimer: 2
+  isBulletCooldown: 0
+  canShoot: 0
 --- !u!54 &-5787833421972493196
 Rigidbody:
   m_ObjectHideFlags: 0

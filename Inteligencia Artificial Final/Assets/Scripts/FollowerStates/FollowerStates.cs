@@ -3,7 +3,7 @@ public enum FollowerStates
     Idle,
     Search,
     Arrive,
-    Shoot,
+    Retreat,
     Flocking,
-    Return
+    Recover
 }

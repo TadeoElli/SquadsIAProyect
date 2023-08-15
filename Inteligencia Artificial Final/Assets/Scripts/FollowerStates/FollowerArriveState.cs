@@ -20,6 +20,7 @@ public class FollowerArriveState : IState
     public void OnEnter()
     {
         //Debug.Log("Arrive");
+        _follower.canShoot = true;
     }
 
     public void OnUpdate()
@@ -44,10 +45,9 @@ public class FollowerArriveState : IState
         
         if(!_follower.InLineOfSight(_follower.leader.position))
             _fsm.ChangeState(FollowerStates.Search);
-        /*if (!_follower.InFieldOfView(_follower.leader.transform.position))
-        {
-            _fsm.ChangeState(FollowerStates.Search);
-        }*/
+        
+        if(_follower.life <= 20)
+            _fsm.ChangeState(FollowerStates.Retreat);
     }
 
     public void OnFixedUpdate()

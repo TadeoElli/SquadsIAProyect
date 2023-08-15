@@ -2045,32 +2045,16 @@ PrefabInstance:
     m_TransformParent: {fileID: 0}
     m_Modifications:
     - target: {fileID: 300044633522199249, guid: 37a67e667a9a04d428ddb54879bccb2c, type: 3}
-      propertyPath: model
+      propertyPath: _baseNode
       value: 
-      objectReference: {fileID: 1916479040426758346, guid: 6e3a9ecb28d26994ca8d3594f3fb516a, type: 3}
-    - target: {fileID: 300044633522199249, guid: 37a67e667a9a04d428ddb54879bccb2c, type: 3}
-      propertyPath: bulletTimer
-      value: 5
-      objectReference: {fileID: 0}
+      objectReference: {fileID: 672223037}
     - target: {fileID: 300044633522199249, guid: 37a67e667a9a04d428ddb54879bccb2c, type: 3}
       propertyPath: enemyLeader
       value: 
       objectReference: {fileID: 414376467}
-    - target: {fileID: 300044633522199249, guid: 37a67e667a9a04d428ddb54879bccb2c, type: 3}
-      propertyPath: walls.m_Bits
-      value: 256
-      objectReference: {fileID: 0}
-    - target: {fileID: 300044633522199249, guid: 37a67e667a9a04d428ddb54879bccb2c, type: 3}
-      propertyPath: bullets.m_Bits
-      value: 4096
-      objectReference: {fileID: 0}
     - target: {fileID: 300044633522199258, guid: 37a67e667a9a04d428ddb54879bccb2c, type: 3}
       propertyPath: m_Name
       value: Leader 2
-      objectReference: {fileID: 0}
-    - target: {fileID: 300044633522199261, guid: 37a67e667a9a04d428ddb54879bccb2c, type: 3}
-      propertyPath: m_IsTrigger
-      value: 0
       objectReference: {fileID: 0}
     - target: {fileID: 300044633522199262, guid: 37a67e667a9a04d428ddb54879bccb2c, type: 3}
       propertyPath: m_RootOrder
@@ -3822,7 +3806,7 @@ GameObject:
   - component: {fileID: 424004877}
   - component: {fileID: 424004876}
   - component: {fileID: 424004875}
-  m_Layer: 0
+  m_Layer: 13
   m_Name: Floor Team 1
   m_TagString: Base
   m_Icon: {fileID: 0}
@@ -4501,10 +4485,26 @@ PrefabInstance:
   m_Modification:
     m_TransformParent: {fileID: 0}
     m_Modifications:
+    - target: {fileID: -5787833421972493196, guid: c03e3bed2dce1b24180fbe70874e19fa, type: 3}
+      propertyPath: m_UseGravity
+      value: 0
+      objectReference: {fileID: 0}
     - target: {fileID: 8742965053848047912, guid: c03e3bed2dce1b24180fbe70874e19fa, type: 3}
       propertyPath: leader
       value: 
       objectReference: {fileID: 414376471}
+    - target: {fileID: 8742965053848047912, guid: c03e3bed2dce1b24180fbe70874e19fa, type: 3}
+      propertyPath: _baseNode
+      value: 
+      objectReference: {fileID: 545996962}
+    - target: {fileID: 8742965053848047912, guid: c03e3bed2dce1b24180fbe70874e19fa, type: 3}
+      propertyPath: bulletTimer
+      value: 2
+      objectReference: {fileID: 0}
+    - target: {fileID: 8742965053848047912, guid: c03e3bed2dce1b24180fbe70874e19fa, type: 3}
+      propertyPath: enemyLeader
+      value: 
+      objectReference: {fileID: 1160868512}
     - target: {fileID: 8742965053848047915, guid: c03e3bed2dce1b24180fbe70874e19fa, type: 3}
       propertyPath: m_RootOrder
       value: 15
@@ -4555,7 +4555,7 @@ PrefabInstance:
       objectReference: {fileID: 0}
     - target: {fileID: 8742965053848047919, guid: c03e3bed2dce1b24180fbe70874e19fa, type: 3}
       propertyPath: m_IsActive
-      value: 0
+      value: 1
       objectReference: {fileID: 0}
     m_RemovedComponents: []
   m_SourcePrefab: {fileID: 100100000, guid: c03e3bed2dce1b24180fbe70874e19fa, type: 3}
@@ -5857,6 +5857,18 @@ PrefabInstance:
       propertyPath: leader
       value: 
       objectReference: {fileID: 1160868516}
+    - target: {fileID: 8742965053848047912, guid: 56a7dc100cf546c4c95ed36585c1ee1e, type: 3}
+      propertyPath: _baseNode
+      value: 
+      objectReference: {fileID: 672223037}
+    - target: {fileID: 8742965053848047912, guid: 56a7dc100cf546c4c95ed36585c1ee1e, type: 3}
+      propertyPath: bulletTimer
+      value: 2
+      objectReference: {fileID: 0}
+    - target: {fileID: 8742965053848047912, guid: 56a7dc100cf546c4c95ed36585c1ee1e, type: 3}
+      propertyPath: enemyLeader
+      value: 
+      objectReference: {fileID: 414376467}
     - target: {fileID: 8742965053848047915, guid: 56a7dc100cf546c4c95ed36585c1ee1e, type: 3}
       propertyPath: m_RootOrder
       value: 6
@@ -5907,7 +5919,7 @@ PrefabInstance:
       objectReference: {fileID: 0}
     - target: {fileID: 8742965053848047919, guid: 56a7dc100cf546c4c95ed36585c1ee1e, type: 3}
       propertyPath: m_IsActive
-      value: 0
+      value: 1
       objectReference: {fileID: 0}
     m_RemovedComponents: []
   m_SourcePrefab: {fileID: 100100000, guid: 56a7dc100cf546c4c95ed36585c1ee1e, type: 3}
@@ -6019,6 +6031,18 @@ PrefabInstance:
       propertyPath: leader
       value: 
       objectReference: {fileID: 1160868516}
+    - target: {fileID: 8742965053848047912, guid: 56a7dc100cf546c4c95ed36585c1ee1e, type: 3}
+      propertyPath: _baseNode
+      value: 
+      objectReference: {fileID: 672223037}
+    - target: {fileID: 8742965053848047912, guid: 56a7dc100cf546c4c95ed36585c1ee1e, type: 3}
+      propertyPath: bulletTimer
+      value: 2
+      objectReference: {fileID: 0}
+    - target: {fileID: 8742965053848047912, guid: 56a7dc100cf546c4c95ed36585c1ee1e, type: 3}
+      propertyPath: enemyLeader
+      value: 
+      objectReference: {fileID: 414376467}
     - target: {fileID: 8742965053848047915, guid: 56a7dc100cf546c4c95ed36585c1ee1e, type: 3}
       propertyPath: m_RootOrder
       value: 7
@@ -6069,7 +6093,7 @@ PrefabInstance:
       objectReference: {fileID: 0}
     - target: {fileID: 8742965053848047919, guid: 56a7dc100cf546c4c95ed36585c1ee1e, type: 3}
       propertyPath: m_IsActive
-      value: 0
+      value: 1
       objectReference: {fileID: 0}
     m_RemovedComponents: []
   m_SourcePrefab: {fileID: 100100000, guid: 56a7dc100cf546c4c95ed36585c1ee1e, type: 3}
@@ -7340,6 +7364,18 @@ PrefabInstance:
       value: 
       objectReference: {fileID: 1160868516}
     - target: {fileID: 8742965053848047912, guid: 56a7dc100cf546c4c95ed36585c1ee1e, type: 3}
+      propertyPath: _baseNode
+      value: 
+      objectReference: {fileID: 672223037}
+    - target: {fileID: 8742965053848047912, guid: 56a7dc100cf546c4c95ed36585c1ee1e, type: 3}
+      propertyPath: bulletTimer
+      value: 2
+      objectReference: {fileID: 0}
+    - target: {fileID: 8742965053848047912, guid: 56a7dc100cf546c4c95ed36585c1ee1e, type: 3}
+      propertyPath: enemyLeader
+      value: 
+      objectReference: {fileID: 414376467}
+    - target: {fileID: 8742965053848047912, guid: 56a7dc100cf546c4c95ed36585c1ee1e, type: 3}
       propertyPath: _originalColor.b
       value: 0.09656459
       objectReference: {fileID: 0}
@@ -7401,7 +7437,7 @@ PrefabInstance:
       objectReference: {fileID: 0}
     - target: {fileID: 8742965053848047919, guid: 56a7dc100cf546c4c95ed36585c1ee1e, type: 3}
       propertyPath: m_IsActive
-      value: 0
+      value: 1
       objectReference: {fileID: 0}
     m_RemovedComponents: []
   m_SourcePrefab: {fileID: 100100000, guid: 56a7dc100cf546c4c95ed36585c1ee1e, type: 3}
@@ -10333,10 +10369,26 @@ PrefabInstance:
   m_Modification:
     m_TransformParent: {fileID: 0}
     m_Modifications:
+    - target: {fileID: -5787833421972493196, guid: c03e3bed2dce1b24180fbe70874e19fa, type: 3}
+      propertyPath: m_UseGravity
+      value: 0
+      objectReference: {fileID: 0}
     - target: {fileID: 8742965053848047912, guid: c03e3bed2dce1b24180fbe70874e19fa, type: 3}
       propertyPath: leader
       value: 
       objectReference: {fileID: 414376471}
+    - target: {fileID: 8742965053848047912, guid: c03e3bed2dce1b24180fbe70874e19fa, type: 3}
+      propertyPath: _baseNode
+      value: 
+      objectReference: {fileID: 545996962}
+    - target: {fileID: 8742965053848047912, guid: c03e3bed2dce1b24180fbe70874e19fa, type: 3}
+      propertyPath: bulletTimer
+      value: 2
+      objectReference: {fileID: 0}
+    - target: {fileID: 8742965053848047912, guid: c03e3bed2dce1b24180fbe70874e19fa, type: 3}
+      propertyPath: enemyLeader
+      value: 
+      objectReference: {fileID: 1160868512}
     - target: {fileID: 8742965053848047915, guid: c03e3bed2dce1b24180fbe70874e19fa, type: 3}
       propertyPath: m_RootOrder
       value: 17
@@ -10387,7 +10439,7 @@ PrefabInstance:
       objectReference: {fileID: 0}
     - target: {fileID: 8742965053848047919, guid: c03e3bed2dce1b24180fbe70874e19fa, type: 3}
       propertyPath: m_IsActive
-      value: 0
+      value: 1
       objectReference: {fileID: 0}
     m_RemovedComponents: []
   m_SourcePrefab: {fileID: 100100000, guid: c03e3bed2dce1b24180fbe70874e19fa, type: 3}
@@ -10826,6 +10878,18 @@ PrefabInstance:
       propertyPath: leader
       value: 
       objectReference: {fileID: 1160868516}
+    - target: {fileID: 8742965053848047912, guid: 56a7dc100cf546c4c95ed36585c1ee1e, type: 3}
+      propertyPath: _baseNode
+      value: 
+      objectReference: {fileID: 672223037}
+    - target: {fileID: 8742965053848047912, guid: 56a7dc100cf546c4c95ed36585c1ee1e, type: 3}
+      propertyPath: bulletTimer
+      value: 2
+      objectReference: {fileID: 0}
+    - target: {fileID: 8742965053848047912, guid: 56a7dc100cf546c4c95ed36585c1ee1e, type: 3}
+      propertyPath: enemyLeader
+      value: 
+      objectReference: {fileID: 414376467}
     - target: {fileID: 8742965053848047915, guid: 56a7dc100cf546c4c95ed36585c1ee1e, type: 3}
       propertyPath: m_RootOrder
       value: 8
@@ -10876,7 +10940,7 @@ PrefabInstance:
       objectReference: {fileID: 0}
     - target: {fileID: 8742965053848047919, guid: 56a7dc100cf546c4c95ed36585c1ee1e, type: 3}
       propertyPath: m_IsActive
-      value: 0
+      value: 1
       objectReference: {fileID: 0}
     m_RemovedComponents: []
   m_SourcePrefab: {fileID: 100100000, guid: 56a7dc100cf546c4c95ed36585c1ee1e, type: 3}
@@ -13571,10 +13635,26 @@ PrefabInstance:
   m_Modification:
     m_TransformParent: {fileID: 0}
     m_Modifications:
+    - target: {fileID: -5787833421972493196, guid: c03e3bed2dce1b24180fbe70874e19fa, type: 3}
+      propertyPath: m_UseGravity
+      value: 0
+      objectReference: {fileID: 0}
     - target: {fileID: 8742965053848047912, guid: c03e3bed2dce1b24180fbe70874e19fa, type: 3}
       propertyPath: leader
       value: 
       objectReference: {fileID: 414376471}
+    - target: {fileID: 8742965053848047912, guid: c03e3bed2dce1b24180fbe70874e19fa, type: 3}
+      propertyPath: _baseNode
+      value: 
+      objectReference: {fileID: 545996962}
+    - target: {fileID: 8742965053848047912, guid: c03e3bed2dce1b24180fbe70874e19fa, type: 3}
+      propertyPath: bulletTimer
+      value: 2
+      objectReference: {fileID: 0}
+    - target: {fileID: 8742965053848047912, guid: c03e3bed2dce1b24180fbe70874e19fa, type: 3}
+      propertyPath: enemyLeader
+      value: 
+      objectReference: {fileID: 1160868512}
     - target: {fileID: 8742965053848047915, guid: c03e3bed2dce1b24180fbe70874e19fa, type: 3}
       propertyPath: m_RootOrder
       value: 14
@@ -13625,7 +13705,7 @@ PrefabInstance:
       objectReference: {fileID: 0}
     - target: {fileID: 8742965053848047919, guid: c03e3bed2dce1b24180fbe70874e19fa, type: 3}
       propertyPath: m_IsActive
-      value: 0
+      value: 1
       objectReference: {fileID: 0}
     m_RemovedComponents: []
   m_SourcePrefab: {fileID: 100100000, guid: c03e3bed2dce1b24180fbe70874e19fa, type: 3}
@@ -14078,10 +14158,26 @@ PrefabInstance:
   m_Modification:
     m_TransformParent: {fileID: 0}
     m_Modifications:
+    - target: {fileID: -5787833421972493196, guid: c03e3bed2dce1b24180fbe70874e19fa, type: 3}
+      propertyPath: m_UseGravity
+      value: 0
+      objectReference: {fileID: 0}
     - target: {fileID: 8742965053848047912, guid: c03e3bed2dce1b24180fbe70874e19fa, type: 3}
       propertyPath: leader
       value: 
       objectReference: {fileID: 414376471}
+    - target: {fileID: 8742965053848047912, guid: c03e3bed2dce1b24180fbe70874e19fa, type: 3}
+      propertyPath: _baseNode
+      value: 
+      objectReference: {fileID: 545996962}
+    - target: {fileID: 8742965053848047912, guid: c03e3bed2dce1b24180fbe70874e19fa, type: 3}
+      propertyPath: bulletTimer
+      value: 2
+      objectReference: {fileID: 0}
+    - target: {fileID: 8742965053848047912, guid: c03e3bed2dce1b24180fbe70874e19fa, type: 3}
+      propertyPath: enemyLeader
+      value: 
+      objectReference: {fileID: 1160868512}
     - target: {fileID: 8742965053848047915, guid: c03e3bed2dce1b24180fbe70874e19fa, type: 3}
       propertyPath: m_RootOrder
       value: 16
@@ -14132,7 +14228,7 @@ PrefabInstance:
       objectReference: {fileID: 0}
     - target: {fileID: 8742965053848047919, guid: c03e3bed2dce1b24180fbe70874e19fa, type: 3}
       propertyPath: m_IsActive
-      value: 0
+      value: 1
       objectReference: {fileID: 0}
     m_RemovedComponents: []
   m_SourcePrefab: {fileID: 100100000, guid: c03e3bed2dce1b24180fbe70874e19fa, type: 3}
@@ -17556,6 +17652,18 @@ PrefabInstance:
       propertyPath: leader
       value: 
       objectReference: {fileID: 1160868516}
+    - target: {fileID: 8742965053848047912, guid: 56a7dc100cf546c4c95ed36585c1ee1e, type: 3}
+      propertyPath: _baseNode
+      value: 
+      objectReference: {fileID: 672223037}
+    - target: {fileID: 8742965053848047912, guid: 56a7dc100cf546c4c95ed36585c1ee1e, type: 3}
+      propertyPath: bulletTimer
+      value: 2
+      objectReference: {fileID: 0}
+    - target: {fileID: 8742965053848047912, guid: 56a7dc100cf546c4c95ed36585c1ee1e, type: 3}
+      propertyPath: enemyLeader
+      value: 
+      objectReference: {fileID: 414376467}
     - target: {fileID: 8742965053848047915, guid: 56a7dc100cf546c4c95ed36585c1ee1e, type: 3}
       propertyPath: m_RootOrder
       value: 4
@@ -17606,7 +17714,7 @@ PrefabInstance:
       objectReference: {fileID: 0}
     - target: {fileID: 8742965053848047919, guid: 56a7dc100cf546c4c95ed36585c1ee1e, type: 3}
       propertyPath: m_IsActive
-      value: 0
+      value: 1
       objectReference: {fileID: 0}
     m_RemovedComponents: []
   m_SourcePrefab: {fileID: 100100000, guid: 56a7dc100cf546c4c95ed36585c1ee1e, type: 3}
@@ -17666,25 +17774,13 @@ PrefabInstance:
       value: 0
       objectReference: {fileID: 0}
     - target: {fileID: 6289504048937808221, guid: 795451dd055348f4a9bd6acbdc8d47d9, type: 3}
-      propertyPath: model
+      propertyPath: _baseNode
       value: 
-      objectReference: {fileID: 1916479040426758346, guid: 6e3a9ecb28d26994ca8d3594f3fb516a, type: 3}
-    - target: {fileID: 6289504048937808221, guid: 795451dd055348f4a9bd6acbdc8d47d9, type: 3}
-      propertyPath: bulletTimer
-      value: 5
-      objectReference: {fileID: 0}
+      objectReference: {fileID: 545996962}
     - target: {fileID: 6289504048937808221, guid: 795451dd055348f4a9bd6acbdc8d47d9, type: 3}
       propertyPath: enemyLeader
       value: 
       objectReference: {fileID: 1160868512}
-    - target: {fileID: 6289504048937808221, guid: 795451dd055348f4a9bd6acbdc8d47d9, type: 3}
-      propertyPath: walls.m_Bits
-      value: 256
-      objectReference: {fileID: 0}
-    - target: {fileID: 6289504048937808221, guid: 795451dd055348f4a9bd6acbdc8d47d9, type: 3}
-      propertyPath: bullets.m_Bits
-      value: 4096
-      objectReference: {fileID: 0}
     m_RemovedComponents: []
   m_SourcePrefab: {fileID: 100100000, guid: 795451dd055348f4a9bd6acbdc8d47d9, type: 3}
 --- !u!1 &1938648428
@@ -19638,6 +19734,18 @@ PrefabInstance:
       propertyPath: leader
       value: 
       objectReference: {fileID: 414376471}
+    - target: {fileID: 8742965053848047912, guid: c03e3bed2dce1b24180fbe70874e19fa, type: 3}
+      propertyPath: _baseNode
+      value: 
+      objectReference: {fileID: 545996962}
+    - target: {fileID: 8742965053848047912, guid: c03e3bed2dce1b24180fbe70874e19fa, type: 3}
+      propertyPath: bulletTimer
+      value: 2
+      objectReference: {fileID: 0}
+    - target: {fileID: 8742965053848047912, guid: c03e3bed2dce1b24180fbe70874e19fa, type: 3}
+      propertyPath: enemyLeader
+      value: 
+      objectReference: {fileID: 1160868512}
     - target: {fileID: 8742965053848047915, guid: c03e3bed2dce1b24180fbe70874e19fa, type: 3}
       propertyPath: m_RootOrder
       value: 13
@@ -19685,10 +19793,6 @@ PrefabInstance:
     - target: {fileID: 8742965053848047919, guid: c03e3bed2dce1b24180fbe70874e19fa, type: 3}
       propertyPath: m_Name
       value: Follower
-      objectReference: {fileID: 0}
-    - target: {fileID: 8742965053848047919, guid: c03e3bed2dce1b24180fbe70874e19fa, type: 3}
-      propertyPath: m_IsActive
-      value: 0
       objectReference: {fileID: 0}
     m_RemovedComponents: []
   m_SourcePrefab: {fileID: 100100000, guid: c03e3bed2dce1b24180fbe70874e19fa, type: 3}

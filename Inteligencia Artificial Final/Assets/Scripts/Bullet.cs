@@ -6,6 +6,7 @@ public class Bullet : MonoBehaviour
 {
     [SerializeField] private float speed = 5;
     [SerializeField] private float time = 1f;
+    public GameObject parent;
     float timer;
     Vector3 pos;
     void Start()
@@ -33,7 +34,7 @@ public class Bullet : MonoBehaviour
     {
         if(other.gameObject.layer == 8 )
             Destroy(gameObject);
-        if((other.gameObject.layer == 9 || other.gameObject.layer == 11) && other.gameObject != this.transform.parent)
+        if((other.gameObject.layer == 9 || other.gameObject.layer == 11) && other.gameObject != parent)
             Destroy(gameObject);
 
     }

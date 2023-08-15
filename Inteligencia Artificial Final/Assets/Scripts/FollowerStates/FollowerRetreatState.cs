@@ -2,7 +2,7 @@ using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 
-public class FollowerSearchState : IState
+public class FollowerRetreatState : IState
 {
     Follower _follower;
 
@@ -11,7 +11,7 @@ public class FollowerSearchState : IState
     Pathfinding _pathfinding;
     private bool isEvading = false;
     private Transform _obstacle;
-    public FollowerSearchState(FSM<FollowerStates> fsm, Follower follower, List<Node> pathToFollow, Pathfinding pathfinding)
+    public FollowerRetreatState(FSM<FollowerStates> fsm, Follower follower, List<Node> pathToFollow, Pathfinding pathfinding)
     {
         _follower = follower;
 
@@ -23,10 +23,11 @@ public class FollowerSearchState : IState
 
     public void OnEnter()
     {
-        _follower.SetStartingNode();
-        _follower.SetGoalNode();
         _follower.canShoot = false;
-        _pathToFollow = _pathfinding.ThetaStar(_follower._startingNode, _follower._goalNode);
+        _follower.isRetreating = true;
+        _follower.SetStartingNode();
+        //Debug.Log("Search");
+        _pathToFollow = _pathfinding.ThetaStar(_follower._startingNode, _follower._baseNode);
     }
 
     public void OnUpdate()
@@ -34,8 +35,6 @@ public class FollowerSearchState : IState
         FollowPath();
         if(_pathToFollow.Count == 0)
             _fsm.ChangeState(FollowerStates.Idle);
-        if(_follower.InLineOfSight(_follower.leader.position))
-            _fsm.ChangeState(FollowerStates.Arrive);
     }
 
     public void OnFixedUpdate()

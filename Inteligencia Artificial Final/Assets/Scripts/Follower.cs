@@ -39,13 +39,22 @@ public class Follower : MonoBehaviour
     [SerializeField] private float _viewAngle;
 
     [Header("Pathfinding")]
-    public Node _startingNode, _goalNode;
+    public Node _startingNode, _goalNode, _baseNode;
     [HideInInspector] public bool isEvadingObstacles = false;
-    [HideInInspector] public bool isEvadingWalls = false;  
+    [HideInInspector] public bool isEvadingWalls = false; 
+    [HideInInspector] public bool isRetreating = false; 
     //public bool _startSearch = false;
     //public bool _hasReachNode = false;
     List<Node> _pathToFollow;
     Pathfinding _pathfinding;
+
+    [Header("Combat")]
+    [SerializeField] public Leader enemyLeader;
+    [SerializeField] public List<Follower> enemiesFollowers;
+    [SerializeField] public Bullet model;
+    [SerializeField] private float bulletTimer;
+    private float timer;
+    public bool isBulletCooldown, canShoot;
     private void Start() 
     {
         _FSM = new FSM<FollowerStates>();
@@ -61,13 +70,20 @@ public class Follower : MonoBehaviour
         _FSM.AddState(FollowerStates.Idle, new FollowerIdleState(_FSM, this));
 
         _FSM.AddState(FollowerStates.Search, new FollowerSearchState(_FSM, this, _pathToFollow, _pathfinding));
+        _FSM.AddState(FollowerStates.Retreat, new FollowerRetreatState(_FSM, this, _pathToFollow, _pathfinding));
         _FSM.AddState(FollowerStates.Arrive, new FollowerArriveState(_FSM, this));
         _FSM.AddState(FollowerStates.Flocking, new FollowerFlockingState(_FSM, this));
 
         if(this.gameObject.tag == "Team1")
+        {
             FollowersManagerTeam1.Instance.RegisterNewFollower(this);
+            enemiesFollowers = FollowersManagerTeam2.Instance.AllFollowers;
+        }
         if(this.gameObject.tag == "Team2")
+        {
             FollowersManagerTeam2.Instance.RegisterNewFollower(this);
+            enemiesFollowers = FollowersManagerTeam1.Instance.AllFollowers;
+        }
         
         _myArriveSteering = new ArriveSteering(transform, _maxSpeed, _maxForce, _arriveRadius);
         _mySeekSteering = new SeekSteering(transform, _maxSpeed, _maxForce);
@@ -87,9 +103,23 @@ public class Follower : MonoBehaviour
         _FSM.Update();
         _FSM.FixedUpdate();
 
+        if(canShoot)
+        {
+            if(isBulletCooldown)
+                ShootCooldown();
+            else
+                Shoot();
+        }
+        
         
     }
 
+    public void ReceiveDamage()
+    {
+        life = life - 10;
+        _myMaterial.color = Color.red;
+        Invoke("RestoreColor", 0.3f);
+    }
     public void ChangeColor(Color newColor)
     {
         _myMaterial.color = newColor;
@@ -105,7 +135,26 @@ public class Follower : MonoBehaviour
 
         _velocity = Vector3.ClampMagnitude(_velocity, _maxSpeed);
     }
-
+    public void Shoot()
+    {
+        Bullet bullet = GameObject.Instantiate(model);
+        if(this.gameObject.tag == "Team1")
+            bullet.gameObject.tag = "Team1";
+        if(this.gameObject.tag == "Team2")
+            bullet.gameObject.tag = "Team2";
+        bullet.Move(transform.position, transform.forward);
+        bullet.parent = this.gameObject;
+        
+        isBulletCooldown = true;
+        timer = 0;
+    }
+    public void ShootCooldown()
+    {
+        if(timer >= bulletTimer)
+            isBulletCooldown = false;
+        else
+            timer = timer + 1 * Time.deltaTime;
+    }
     public void SetGoalNode()
     {
         Collider[] hitColliders = Physics.OverlapSphere(leader.position, 5f, nodes);
@@ -234,5 +283,17 @@ public class Follower : MonoBehaviour
         //Debug.DrawLine(transform.position, leader.transform.position, Color.red);
         //return !Physics.Raycast(this.transform.position, dir, 99, walls);
         return !Physics.SphereCast(this.transform.position,0.5f, dir, out hit, dir.magnitude, walls);
+    }
+
+    void OnTriggerEnter(Collider other)
+    {
+        if(other.gameObject.layer == 12)
+        {
+            //Debug.Log("Daño");
+            if((this.gameObject.tag == "Team1" && other.gameObject.tag == "Team2") || (this.gameObject.tag == "Team2" && other.gameObject.tag == "Team1"))
+            {
+                ReceiveDamage();
+            }
+        }
     }
 }
